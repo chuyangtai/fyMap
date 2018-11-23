@@ -10,7 +10,7 @@
         <div class="flex justify-between items-start">
             <div class="title"></div>
         </div>
-        <div class="flex justify-between items-start mt20">
+        <div class="flex items-start mt20">
             <div>
                 <div class="module-case patients-case">
                     <p class="title-bar">实时就诊信息</p>
@@ -25,17 +25,19 @@
             </div>
 
             <div class="charts">
+
+                <tabs></tabs>
+                <canvas id="map" width="904" height="540">canvas</canvas>
                 <div>
                     <stats></stats>
                 </div>
-                <tabs></tabs>
             </div>
-
         </div>
     </div>
     <script src="js/vue.min.js"></script>
     <script src="js/echarts.min.js"></script>
     <script src="js/lodash.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/cMap.js"></script>
 </body>
 </html>
