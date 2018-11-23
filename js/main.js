@@ -351,10 +351,10 @@
                     radius: '100%',
                     axisLine: {            // 坐标轴线
                         lineStyle: {       // 属性lineStyle控制线条样式
-                            color: [[0.09, 'lime'],[0.82, '#1e90ff'],[1, '#ff4500']],
-                            width: 2,
+                            color: [[0.2, '#F43335'],[0.8, '#6BCEFC'],[1, '#4DECBA']],
+                            width: 4,
                             shadowColor : '#fff', //默认透明
-                            shadowBlur: 10
+                            shadowBlur: 5
                         }
                     },
                     axisLabel: {            // 坐标轴小标记
@@ -366,11 +366,11 @@
                         }
                     },
                     axisTick: {            // 坐标轴小标记
-                        length :15,        // 属性length控制线长
+                        length :11,        // 属性length控制线长
                         lineStyle: {       // 属性lineStyle控制线条样式
                             color: 'auto',
                             shadowColor : '#fff', //默认透明
-                            shadowBlur: 10
+                            shadowBlur: 0
                         }
                     },
                     splitLine: {           // 分隔线
@@ -385,22 +385,13 @@
                     pointer: {           // 分隔线
                         shadowColor : '#fff', //默认透明
                         shadowBlur: 2,
-                        size:5
+                        width:4
                     },
                     title : {
-                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                            fontSize: 20,
-                            fontStyle: 'italic',
-                            color: '#fff',
-                            shadowColor : '#fff', //默认透明
-                            shadowBlur: 10,
-                        }
+                        show:false
                     },
                     detail : {
-                        offsetCenter: [0, '50%'],       // x, y，单位px
-                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                            color: '#fff'
-                        }
+                        show: false
                     },
                     data:[{value: 40, name: ''}]
                 }]

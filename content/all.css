@@ -122,13 +122,14 @@ ul{list-style:none}
 }
 
 /* index */
-.page-index{padding:1rem 1rem 0;background-color:#09153D}
-.page-index .logo{padding-left: 4rem; background: url(logo_guangyuan.png) 0 center no-repeat;}
+.page-index{background-color:#09153D}
+.page-index .logo{padding-left: 4rem;}
 .page-index .logo h3{font-size: 1.2rem; font-weight: inherit;}
 .page-index .logo p{font-size: .7rem;}
+.page-index .title-bg{background: url("../img/dingbu_kuang@2x.png") no-repeat center top;height: 98px;background-size:100% auto;position: relative}
 .page-index .title{width: 30.5rem; height: 3.1rem; background: url(img_title.png) 0 center no-repeat; background-size:contain;}
-.page-index .date{position: relative; margin-left: 2rem; font-size: 1.2rem; color: #2cc3ff;}
-.page-index .date:before{position: absolute; top: .6rem; left: -.85rem; content: ''; display: block; width: .5rem; height: .5rem; background: #fc0808; border-radius: 50%; overflow: hidden;}
+.page-index .date{position: relative; margin-left: 2rem; font-size: 1.2rem; color: #34AAFC;position: absolute;right: 1.9rem}
+.page-index .date:before{margin-top:-.25rem;position: absolute; top: 50%; left:-1rem; content: ''; display: block; width: .5rem; height: .5rem; background: #fc0808; border-radius: 50%; overflow: hidden;}
 .page-index .address{margin-top: .8rem; padding-left: 3rem; width: 20rem; height: 3rem; line-height: 3rem; font-size: .8rem; color: #ffc300; border: 1px solid #58abff; border-radius: 1.5rem; overflow: hidden; background: url(ic_dw.png) 1rem center no-repeat;}
 .page-index .title-bar{position: relative; margin:0 -.9rem .8rem -.9rem;line-height: 56px;font-size: .9rem; text-align: center; background: url(ic_line.png) center bottom no-repeat; background-size: contain; }
 .page-index .title-bar .barTab{position: absolute; top: 0; right: 1rem; display: flex;}
@@ -137,6 +138,7 @@ ul{list-style:none}
 .page-index .module-case{padding: 0 1rem 1rem 1rem; width: 400px; border: 1px solid #58abff;height: 242px}
 .page-index .module-case.pay{height: 313px}
 
+.page-index .content{padding: 1.9rem}
 .page-index .patients-case{position: relative; height:242px; overflow: hidden;}
 .page-index .patients{position:absolute;left:0;top:3rem;right:0;bottom:0;overflow:hidden}
 .page-index .patients ul{position:absolute;left:.9rem;top:auto;right:.9rem;bottom:0;padding:0 1rem; border-left: 1px solid rgba(45, 255, 56, .3);}
@@ -188,13 +190,18 @@ ul{list-style:none}
 .pay-flip-enter,.flip-leave-active{opacity:0}
 
 /* charts */
-.page-index .charts{width: 50rem;margin-left: 2rem;}
+.page-index .charts{margin-left: 2rem;}
 
 .page-index .stats{margin-bottom:1.5rem}
 .page-index ul.stats{display:flex}
+.page-index .legend ul{background-color:rgba(63,153,208,.09);width: 160px;padding: .9rem .6rem;}
+.page-index .legend ul li{font-size: .6rem;margin-bottom: .6rem;line-height:1;padding: .2rem 0;}
+.page-index .legend ul li:last-child{margin-bottom: 0rem;}
+.page-index .legend ul li .level-1{margin-right:.3rem;background-color: #16E9A5;width: .7rem;height: .7rem;}
+.page-index .legend ul li .level-2{margin-right:.3rem;background-color: #FFF801;width: .7rem;height: .7rem;}
+.page-index .legend ul li .level-3{margin-right:.3rem;background-color: #F92625;width: .7rem;height: .7rem;}
 .page-index ul.stats li{position:relative;width:8.4rem;margin-right:1.6rem;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.page-index ul.stats li p{
-    margin-top: 7rem;}
+.page-index ul.stats li p{margin-top: 7rem;}
 .page-index ul.stats li .stat-name{color: #7DDCFF}
 .page-index ul.stats li:last-child{margin-right:0}
 .page-index ul.stats li:first-child{font-size:1rem;text-align:center;line-height:1.25rem}

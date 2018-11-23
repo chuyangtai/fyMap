@@ -32,7 +32,6 @@ var Face=function (spot1,spot2,spot3,spot4,color) {
         ctx.shadowBlur=0.01;
         ctx.shadowColor="#fff";
         //ctx.fillStyle = "rgba("+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+",0.2)";
-        var grad = ctx.createLinearGradient(0, 0, 100, 0);
         ctx.fillStyle = this.color;
         ctx.fill();
     }
@@ -47,9 +46,8 @@ var Rectangle =function (centerX,centerY,width,height,color1,color2,color3,text)
     this.width=width;
     this.height=height;
     this.sopts=[];
-    //console.log(this.height)
     this._drawSpots=function () {
-        console.log(this.height)
+        //console.log(this.height)
         this.sopts.push(new Spot(centerX, centerY, 0, 0, 0));//上0132，下6754
         this.sopts.push(new Spot(centerX, centerY, 0, -this.height,0));
         this.sopts.push(new Spot(centerX, centerY, -this.width, -this.height,0));
@@ -79,12 +77,22 @@ var Rectangle =function (centerX,centerY,width,height,color1,color2,color3,text)
             //文字描绘
             if(text){
                 //console.log(text);
+                ctx.shadowBlur=3;
+                ctx.globalAlpha=0.66;
+                ctx.arc(centerX+2,centerY-height-8,3,0,2*Math.PI);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.globalAlpha=0.24;
+                ctx.arc(centerX+2,centerY-height-8,7,0,2*Math.PI);
+                ctx.fill();
+                ctx.beginPath();
                 ctx.shadowBlur=0;
+                ctx.globalAlpha=0.8;
                 ctx.font = '14px Microsoft Yahei';
-                ctx.textAlign = 'center';
+                ctx.textAlign = 'left';
                 ctx.textBaseline = 'bottom';
                 ctx.fillStyle = '#fff';
-                ctx.fillText(text, centerX, centerY-height);
+                ctx.fillText(text, centerX+15, centerY-height);
             }
         }
 

@@ -7,10 +7,11 @@
 </head>
 <body>
     <div class="page page-index" id="page-index">
-        <div class="flex justify-between items-start">
+        <div class="title-bg">
             <div class="title"></div>
+            <date></date>
         </div>
-        <div class="flex items-start mt20">
+        <div class="content flex items-start mt20">
             <div>
                 <div class="module-case patients-case">
                     <p class="title-bar">实时就诊信息</p>
@@ -25,9 +26,15 @@
             </div>
 
             <div class="charts">
-
                 <tabs></tabs>
                 <canvas id="map" width="904" height="540">canvas</canvas>
+                <div class="legend">
+                    <ul>
+                        <li class="flex items-center"> <div class="level-1"></div><span>1000以下</span></li>
+                        <li class="flex items-center"> <div class="level-2"></div><span>1000～5000</span></li>
+                        <li class="flex items-center"> <div class="level-3"></div><span>5000以上</span></li>
+                    </ul>
+                </div>
                 <div>
                     <stats></stats>
                 </div>
