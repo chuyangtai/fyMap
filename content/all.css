@@ -192,7 +192,10 @@ ul{list-style:none}
 
 .page-index .stats{margin-bottom:1.5rem}
 .page-index ul.stats{display:flex}
-.page-index ul.stats li{position:relative;width:7.5rem;height:7.5rem;margin-right:3rem;border-radius:50%;box-shadow:0 0 0 12px #127dcf inset,0 0 70px #127dcf inset,0 0 30px #127dcf;color:#a8ffff;font-weight:bolder;font-family:Calibri;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.page-index ul.stats li{position:relative;width:8.4rem;margin-right:1.6rem;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.page-index ul.stats li p{
+    margin-top: 7rem;}
+.page-index ul.stats li .stat-name{color: #7DDCFF}
 .page-index ul.stats li:last-child{margin-right:0}
 .page-index ul.stats li:first-child{font-size:1rem;text-align:center;line-height:1.25rem}
 /* .page-index ul.stats li:not(:first-child):before{position:absolute;left:20%;top:-35%;right:-20%;bottom:35%;z-index:0;display:block;content:'';background:url(stat-bg.png) no-repeat} */
