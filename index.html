@@ -39,6 +39,26 @@
                     <stats></stats>
                 </div>
             </div>
+
+			<!-- 折线图 -->
+	        <div class="line-content">
+	            <div class="line-case">
+	                <i class="border-tl"></i><i class="border-tr"></i><i class="border-bl"></i><i class="border-br"></i>
+	                <p class="line-title">当日就诊量</p>
+	                <p class="forecast-visit"><span></span></p>
+	                <div class="line-box" id="line-visit"></div>
+	            </div>
+	            <div class="line-case">
+	                <p class="line-title">智慧支付笔数</p>
+	                <p class="forecast-pay"><span></span></p>
+	                <div class="line-box" id="line-pay"></div>
+	            </div>
+	            <div class="line-case">
+	                <p class="line-title">预约挂号</p>
+	                <p class="forecast-regist"><span></span></p>
+	                <div class="line-box" id="line-regist"></div>
+	            </div>
+	        </div>
         </div>
     </div>
     <script src="js/vue.min.js"></script>
@@ -46,5 +66,360 @@
     <script src="js/lodash.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/cMap.js"></script>
+
+    <script type="text/javascript">
+        // 模拟数据
+        var visitActualData = [10, 7, 8, 6, 21, 9],
+            visitForecastData = [6, 4, 9, 7];
+            payActualData = [130, 57, 88, 16, 12, 99],
+            payForecastData = [61, 54, 9, 62],
+            registActualData = [10, 17, 65, 6, 12, 99],
+            registForecastData = [68, 4, 9, 57];
+        
+        // 折线图的辅助线
+        var visitMax,
+            payMax,
+            registMax;
+        visitMax = Math.max.apply(null, visitActualData.concat(visitForecastData))
+        payMax = Math.max.apply(null, payActualData.concat(payForecastData))
+        registMax = Math.max.apply(null, registActualData.concat(registForecastData))
+
+        // 预测数据调整为折线图数据
+        var datalength = visitActualData.length-1;
+        function fnData (actualData, forecastData){
+            actualData.forEach(function(item,i){
+                i == datalength ? forecastData.splice(i, 0, item) : forecastData.splice(0, 0, '-');
+            })
+        }
+        fnData(visitActualData, visitForecastData);
+        fnData(payActualData, payForecastData);
+        fnData(registActualData, registForecastData);
+
+
+        // 基于准备好的dom，初始化echarts实例
+        var visitChart = echarts.init(document.getElementById('line-visit')),
+            payChart = echarts.init(document.getElementById('line-pay')),
+            registChart = echarts.init(document.getElementById('line-regist'));
+        
+        var visitOption = {
+            grid: {
+                left: '3%',
+                top: '4%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            opacity: .1
+                        }
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#DCE2FE'
+                        }
+                    },
+                    data : ['8','9','10','11','12','13','14','15','16','17']
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    max: visitMax,
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            opacity: .1
+                        }
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#DCE2FE'
+                        }
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'模拟数据',
+                    type:'line',
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 5,
+                    sampling: 'average',
+                    itemStyle: {
+                        normal: {
+                            color: '#51ECBC'
+                        }
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: '#51ECBC' // 0% 处的颜色
+                            }, {
+                                offset: 1, color: '#06254D' // 100% 处的颜色
+                            }],
+                            globalCoord: false // 缺省为 false
+                        },
+                        opacity: .55
+                    },
+                    // data: data
+                    data: visitActualData,
+                    markLine: {
+                        name:'平行于y轴的趋势线',
+                        symbol:'none',
+                        lineStyle: {
+                            type: 'solid',
+                            color: '#ffe'
+                        },
+                        data: [[
+                            {coord:[datalength,0]},
+                            {coord:[datalength,visitMax]}//如何获取grid上侧最大值
+                        ]]
+                    }
+                },
+                {
+                    name:'模拟数据',
+                    type:'line',
+                    itemStyle: {
+                        normal: {
+                            color: '#51ECBC'
+                        }
+                    },
+                    lineStyle: {
+                        normal: {
+                            type: 'dotted'
+                        }
+                    },
+                    data:visitForecastData
+                }
+            ]
+        };
+        var payOption = {
+            grid: {
+                left: '3%',
+                top: '4%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            opacity: .1
+                        }
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#DCE2FE'
+                        }
+                    },
+                    data : ['8','9','10','11','12','13','14','15','16','17']
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    max: payMax,
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            opacity: .1
+                        }
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#DCE2FE'
+                        }
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'模拟数据',
+                    type:'line',
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 5,
+                    sampling: 'average',
+                    itemStyle: {
+                        normal: {
+                            color: '#FFF638'
+                        }
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: '#FFF638' // 0% 处的颜色
+                            }, {
+                                offset: 1, color: '#06254D' // 100% 处的颜色
+                            }],
+                            globalCoord: false // 缺省为 false
+                        },
+                        opacity: .55
+                    },
+                    data: payActualData,
+                    markLine: {
+                        name:'平行于y轴的趋势线',
+                        symbol:'none',
+                        lineStyle: {
+                            type: 'solid',
+                            color: '#ffe'
+                        },
+                        data: [[
+                            {coord:[datalength,0]},
+                            {coord:[datalength,payMax]}//如何获取grid上侧最大值
+                        ]]
+                    }
+                },
+                {
+                    name:'模拟数据',
+                    type:'line',
+                    itemStyle: {
+                        normal: {
+                            color: '#FFF638'
+                        }
+                    },
+                    lineStyle: {
+                        normal: {
+                            type: 'dotted'
+                        }
+                    },
+                    data:payForecastData
+                }
+            ]
+        };
+        var registOption = {
+            grid: {
+                left: '3%',
+                top: '4%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            opacity: .1
+                        }
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#DCE2FE'
+                        }
+                    },
+                    data : ['8','9','10','11','12','13','14','15','16','17']
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    max: registMax,
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            opacity: .1
+                        }
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#DCE2FE'
+                        }
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'模拟数据',
+                    type:'line',
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 5,
+                    sampling: 'average',
+                    itemStyle: {
+                        normal: {
+                            color: '#FC6769'
+                        }
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: '#FC6769' // 0% 处的颜色
+                            }, {
+                                offset: 1, color: '#06254D' // 100% 处的颜色
+                            }],
+                            globalCoord: false // 缺省为 false
+                        },
+                        opacity: .55
+                    },
+                    data: registActualData,
+                    markLine: {
+                        name:'平行于y轴的趋势线',
+                        symbol:'none',
+                        lineStyle: {
+                            type: 'solid',
+                            color: '#ffe'
+                        },
+                        data: [[
+                            {coord:[datalength,0]},
+                            {coord:[datalength,registMax]}//如何获取grid上侧最大值
+                        ]]
+                    }
+                },
+                {
+                    name:'模拟数据',
+                    type:'line',
+                    itemStyle: {
+                        normal: {
+                            color: '#FC6769'
+                        }
+                    },
+                    lineStyle: {
+                        normal: {
+                            type: 'dotted'
+                        }
+                    },
+                    data:registForecastData
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        visitChart.setOption(visitOption);
+        payChart.setOption(payOption);
+        registChart.setOption(registOption);
+    </script>
+
 </body>
 </html>

@@ -250,7 +250,24 @@ ul{list-style:none}
 /* bar */
 .bar{width: 17.5rem; height: 8.7rem;}
 
-
+/*line 折线图*/
+.line-content{margin-top: .5rem;}
+.line-content .line-case{position: relative;width: 20rem;height: 12rem;padding: 0 0 .5rem;margin-bottom: 1.25rem;box-shadow: 0px 0px 10px rgba(200,200,200,0.5) inset,0px 0px 5px rgba(200,200,200,0.5);}
+.line-content .line-case:before{content: '';position: absolute;top: 0;right: 0;bottom: 0;left: 0;border: 1px solid #58abff;opacity:0.55;}
+.line-content [class*="border-"]{position: absolute;;width: .6rem;height: .6rem;}
+.line-content .border-tl{top: 0;left: 0;border-top:2px solid rgba(83,194,255,1);border-left:2px solid rgba(83,194,255,1);}
+.line-content .border-tr{top: 0;right: 0;border-top:2px solid rgba(83,194,255,1);border-right:2px solid rgba(83,194,255,1);}
+.line-content .border-bl{bottom: 0;left: 0;border-bottom:2px solid rgba(83,194,255,1);border-left:2px solid rgba(83,194,255,1);}
+.line-content .border-br{bottom: 0;right: 0;border-bottom:2px solid rgba(83,194,255,1);border-right:2px solid rgba(83,194,255,1);}
+.line-content .line-title{position: relative;line-height: 2.2rem;text-align: center;margin:0;padding-top: .2rem;font-size: .9rem;color: #DCE2FE;background: url(ic_line.png) center bottom no-repeat;background-size: contain;}
+.line-content .line-box{height: 7rem;padding: 0 .5rem;}
+.line-content [class*="forecast-"]{height: 1.8rem;text-align: right;}
+.line-content [class*="forecast-"]>span{position: relative;z-index: 1;display: inline-block;width:2.6rem;height: 1.1rem;text-align: center;line-height: 22px;margin: .2rem 3.5rem 0 0;font-size: .6rem;font-weight:400;color: #fff;}
+.line-content [class*="forecast-"]>span:before{content: '';position: absolute;top: 0;right: 0;bottom: 0;left: 0;}
+.line-content .forecast-visit>span:before{background-color: #51ECBC;opacity:0.5;}
+.line-content .forecast-pay>span:before{background-color: #FFF638;opacity:0.72;}
+.line-content .forecast-regist>span:before{background-color: #FC6769;opacity:0.72;}
+.line-content [class*="forecast-"]>span:after{content: '预测';position: relative;}
 
 
 
