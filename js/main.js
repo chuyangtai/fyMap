@@ -2,76 +2,19 @@
     'use strict';
 
     // 统计
-    let stats = { ydzf: 10000, sxzz: 0, rydj: 0, yygh: 0, mzjz: 0 };
+    let stats = { ydzf: 0, sxzz: 0, rydj: 0, yygh: 0, mzjz: 0 };
+    let statsPercent = { ydzf: 0, sxzz: 0, rydj: 0, yygh: 0, mzjz: 0 };
     // 支付
     let pays = { zfb: 0, wx: 0, xyjy: 0, ydyb: 0, ylzf: 0 };
 
     // 当前挂号、当前就诊
-    let chartTab = {'csrs':0, 'crbk':0,'jjcccs':0,'jjcdms':0};
+    let chartTab = {'rycs':0,'csrs':0, 'crbk':0,'jjcccs':0,'jjcdms':0};
 
     //图表
     let barTab = {week:'周', month:'月'}
 
-    let hospitals = [
-        { name: '富阳妇幼保健院', value: [105.879011, 32.432852], count: 0 },
-        { name: '富阳第一人民医院', value: [105.829955, 32.432336], count: 0 },
-        { name: '富阳中心医院', value: [105.829955, 32.449701], count: 0 },
-        { name: '富阳中医院', value: [105.836783, 32.449701], count: 0 },
-        { name: '富阳八二一医院', value: [105.824129, 32.452095], count: 0 },
-        { name: '富阳第二人民医院', value: [105.83292, 32.438734], count: 0 },
-        { name: '富阳第三人民医院', value: [105.804415, 32.426606], count: 0 },
-        { name: '富阳第四人民医院', value: [105.801735, 32.385228], count: 0 },
-        { name: '富阳利州区中医医院', value: [105.649836, 32.385104], count: 0 },
-        { name: '利州区第二人民医院', value: [105.631488, 32.502106], count: 0 },
 
-        { name: '朝天区妇幼保健院', value: [105.890305, 32.657225], count: 0 },
-        { name: '朝天区中医医院', value: [105.890555, 32.656811], count: 0 },
-        { name: '富阳朝天区人民医院', value: [105.894855, 32.647667], count: 0 },
 
-        { name: '昭化区中医院', value: [105.970605, 32.353732], count: 0 },
-        { name: '富阳昭化区人民医院', value: [105.968538, 32.33114], count: 0 },
-        { name: '昭化区妇幼保健院', value: [105.974162, 32.327765], count: 0 },
-
-        { name: '旺苍县中医院', value: [106.276592, 32.230192], count: 0 },
-        { name: '旺苍县人民医院', value: [106.293723, 32.234233], count: 0 },
-        { name: '旺苍县妇幼保健院', value: [106.317412, 32.236367], count: 0 },
-
-        { name: '青川县妇幼保健院', value: [105.244227, 32.591812], count: 0 },
-        { name: '青川县中医医院', value: [105.247278, 32.588508], count: 0 },
-        { name: '青川县人民医院', value: [105.234512, 32.577736], count: 0 },
-
-        { name: '剑阁县妇幼保健院', value: [105.513583, 32.286945], count: 0 },
-        { name: '剑阁县人民医院', value: [105.530641, 32.278025], count: 0 },
-        { name: '剑阁县中医医院', value: [105.479849, 32.041389], count: 0 },
-
-        { name: '苍溪精神卫生', value: [105.801735, 32.426726], count: 0 },
-        { name: '苍溪县中医院', value: [105.952298, 31.723721], count: 0 },
-        { name: '苍溪县第二人民医院', value: [105.940599, 31.736542], count: 0 },
-        { name: '苍溪县人民医院', value: [105.942846, 31.738356], count: 0 },
-        { name: '苍溪县妇幼保健院', value: [105.947213, 31.739531], count: 0 },
-        { name: '苍溪皮肤病性病防治院', value: [105.957402, 31.741677], count: 0 }
-    ];
-
-    let regions = (function () {
-        let _regions = [];
-        let list = [
-            ['利州区', 400],
-            ['朝天区', 200],
-            ['昭化区', 200],
-            ['旺苍县', 100],
-            ['青川县', 300],
-            ['剑阁县', 100],
-            ['苍溪县', 300]
-        ];
-        list.forEach((item) => {
-            _regions.push({
-                name: item[0],
-                value: item[1]
-            });
-        });
-
-        return _regions;
-    })();
     let mapName = 'fyMap';
 
     let weekData = [10, 52, 200, 334, 390, 330, 220];
@@ -80,6 +23,7 @@
     function Platforms (patients, referrals) {
         // 统计
         this.stats = stats;
+        this.statsPercent = statsPercent;
         this.pieCharts = [];
 
         // 实时就诊
@@ -97,7 +41,7 @@
          // 地图
         this.startAt = new Date().getTime();
         this.mapChart = null;
-        this.hospitals = hospitals;
+
 
         this.chartTab = chartTab;
         this.visits = 0;
@@ -133,35 +77,7 @@
         };
     };
 
-    // 绘制 series[i].lines
-    Platforms.prototype.drawLines = function (name, lineColor) {
-        return {
-            name: name,
-            type: 'lines',
-            zlevel: 1,
-            effect: {
-                show: true,
-                period: 2,
-                symbol: 'pin',
-                //loop: false
-            },
-            //large: true,
-            lineStyle: {
-                normal: {
-                    color: lineColor,
-                    width: 0.3,
-                    opacity: 0.4,
-                    curveness: 0.2
-                }
-            },
-            data: [],
-            tooltip: {
-                formatter: function (params) {
-                    return params.data.fromName + ' &rarr; ' + params.data.toName;
-                }
-            }
-        };
-    };
+
 
     // referral 是否转诊
     Platforms.prototype.addPatients = function (list, referral) {
@@ -188,15 +104,17 @@
         let x = ctime - this.startAt;
         let sIndex = referral ? 3 : 2;
         let rIndex = referral ? 'removeRIndex' : 'removeIndex';
-
+        var payType = ['','门诊急诊', '移动支付', '入院登记,', '预约挂号', '双向转诊'];
         if (!referral) {
             let _unshift = () => {
                 this.patients.unshift({
-                    patientName: item.patientName,
-                    sex: item.sex == '0' ? '男' : '女',
-                    dept: item.dept,
-                    hospitalName: item.toName,
-                    visitTime: item.visitTime,
+                    type: item.Type,
+                    patientType: payType[item.Type],
+                    patientName: item.Name,
+                    sex: item.Sex == '1' ? '男' : '女',
+                    dept: item.DeptName,
+                    hospitalName: item.type == 5 ? item.DeptName : item.HospatileName,
+                    visitTime: item.VistiTime,
                     index: this.idx++
                 });
             };
@@ -209,14 +127,6 @@
             }
         }
 
-    };
-    Platforms.prototype.findHospital = function (name) {
-        return this.hospitals.find((item) => {
-            if (item.name == name) {
-                item.count++;
-                return true;
-            }
-        });
     };
 
     // 日期
@@ -232,13 +142,15 @@
             h = this.numFormat(today.getHours()),
             m = this.numFormat(today.getMinutes()),
             s = this.numFormat(today.getSeconds());
-            pf._date = '<span>'+yy + '-' + MM + '-' + dd + ' ' +  days[day - 1] +'</span><span class="font-digiface">'+h + ':' + m  + ':' +s+'</span>';
+            console.log(days[day]);
+            pf._date = '<span>'+yy + '-' + MM + '-' + dd + ' ' +  days[day] +'</span><span class="font-digiface">'+h + ':' + m  + ':' +s+'</span>';
+
         }
 
          // 初始化数据
          _geDate();
          // 定时获取数据
-         setInterval(_geDate, 1000);
+         //setInterval(_geDate, 1000);
 
        };
     Platforms.prototype.dateTemplate = function () {
@@ -278,7 +190,7 @@
         return dst.join('')
     };
 
-    // 统计圈
+    // 统计仪表数字
     Platforms.prototype.statsTemplate = function () {
         let pf = this;
         let li = {
@@ -293,7 +205,8 @@
                                 </transition-group>\
                             </p>\
                             <span class="stat-name">{{stat.value}}</span>\
-                            <div class="chart-pie" ref="chart"></div>\
+                            <div v-if="stat.key==\'mzjz\'" class="chart-pie" ref="chart2">{{stat.key}}</div>\
+                            <div v-else class="chart-pie" ref="chart"></div>\
                         </li>\
                     ',
             // template:'<li></li>',
@@ -302,11 +215,20 @@
                     return pf.numFormat(pf.stats[this.stat.key], 4).split('');
                 }
             },
+            data () {
+                return {
+                    statsPercent:pf.statsPercent
+                }},
             mounted: function () {
                 this.$nextTick(function () {
                     // debugger
-                    pf.initPie(this.$refs.chart, this.stat.value);
+                    pf.initGauge(this.$refs, this.stat.value,this.statsPercent[this.stat.key]);
                 });
+            },
+            watch:{
+                list:function(val){
+                    pf.initGauge(this.$refs, this.stat.value,this.statsPercent[this.stat.key]);
+                }
             }
         };
 
@@ -323,23 +245,8 @@
             }
         }
     };
-    Platforms.prototype.setStats = function () {
-        for (let key in this.stats) {
-            setTimeout(() => {
-                // 1-100
-                this.stats[key] += Math.floor(Math.random() * 10 + 1);
-
-                setInterval(() => {
-                    this.stats[key] += Math.floor(Math.random() * 10 + 1);
-                }, 2000);
-
-            }, [300, 450, 600, 750, 900][Math.floor(Math.random() * 5)]);
-
-            this.stats[key] += 100;
-        }
-    };
-    Platforms.prototype.initPie = function (dom, name) {
-        let rdm = Math.floor(Math.random() * 100);
+    Platforms.prototype.initGauge = function (dom, name,value) {
+       //console.log(value)
         let option = {
             series: [
                 {
@@ -351,7 +258,7 @@
                     radius: '100%',
                     axisLine: {            // 坐标轴线
                         lineStyle: {       // 属性lineStyle控制线条样式
-                            color: [[0.2, '#F43335'],[0.8, '#6BCEFC'],[1, '#4DECBA']],
+                            color: [[0.2, '#F43335'],[0.6, '#6BCEFC'],[1, '#4DECBA']],
                             width: 4,
                             shadowColor : '#fff', //默认透明
                             shadowBlur: 5
@@ -393,15 +300,106 @@
                     detail : {
                         show: false
                     },
-                    data:[{value: 40, name: ''}]
+                    data:[{'value': value, 'name': ''}]
                 }]
         };
+        let pie;
+        //console.log(dom);
+        if(dom.chart2){
+            option.series[0].max=20000;
+            option.series[0].splitNumber=8,
+            option.series[0].axisLine.lineStyle.color= [[0.2, '#F43335'],[0.8, '#6BCEFC'],[1, '#F43335']];
+            option.series[0].axisLabel= {
+                formatter:function(v){
+                    if(v==2500||v==7500||v==12500||v==17500){
+                        return '';
+                    }else {
+                        return v/1000+'k';
+                    }
 
-        let pie = echarts.init(dom);
+                }
+            };
+            pie = echarts.init(dom.chart2);
+        }else{
+            pie = echarts.init(dom.chart);
+        }
+
         pie.setOption(option);
-
         this.pieCharts.push(pie);
     };
+    //仪表盘
+    Platforms.prototype.setStats = function () {
+     let pf=this;
+
+        setInterval(() => {
+            axios.get('api/CityBrain/DashBoardInfo').then(function (response) {
+                var response=response.data.Data;
+                response.forEach(function (item) {
+                    if(item.Type==1){
+                        pf.stats.ydzf=item.Count;
+                        pf.statsPercent.ydzf=item.Percent;
+                    }else if(item.Type==2){
+                        pf.stats.sxzz=item.Count;
+                        pf.statsPercent.sxzz=item.Percent;
+                    }else if(item.Type==3){
+                        pf.stats.rydj=item.Count;
+                        pf.statsPercent.rydj=item.Percent;
+                    }else if(item.Type==4){
+                        pf.stats.yygh=item.Count;
+                        pf.statsPercent.yygh=item.Percent;
+                    }else if(item.Type==5){
+                        pf.stats.mzjz=item.Count;
+                        pf.statsPercent.mzjz=item.Percent;
+                    }
+                });
+            }).catch(function (error) {
+                let response= [{
+                    "Type": "1",
+                    "Count": "14192",
+                    "Percent": "59"
+                }, {
+                    "Type": "2",
+                    "Count": "1213",
+                    "Percent": "20"
+                }, {
+                    "Type": "3",
+                    "Count": "2013",
+                    "Percent": "34"
+                }, {
+                    "Type": "4",
+                    "Count": "363",
+                    "Percent": "4"
+                }, {
+                    "Type": "5",
+                    "Count": "180",
+                    "Percent": "2000"
+                }];
+                response.forEach(function (item) {
+                    if(item.Type==1){
+                        pf.stats.ydzf=item.Count;
+                        pf.statsPercent.ydzf=item.Percent;
+                    }else if(item.Type==2){
+                        pf.stats.sxzz=item.Count;
+                        pf.statsPercent.sxzz=item.Percent;
+                    }else if(item.Type==3){
+                        pf.stats.rydj=item.Count;
+                        pf.statsPercent.rydj=item.Percent;
+                    }else if(item.Type==4){
+                        pf.stats.yygh=item.Count;
+                        pf.statsPercent.yygh=item.Percent;
+                    }else if(item.Type==5){
+                        pf.stats.mzjz=item.Count;
+                        pf.statsPercent.mzjz=item.Percent;
+                    }
+                });
+                console.log(pf.statsPercent)
+                console.log(error);
+            });
+
+        }, 3000);
+
+    };
+
 
     // 实时就诊
     Platforms.prototype.patientsTemplate = function () {
@@ -410,8 +408,14 @@
             template: '<div class="patients">\
                     <transition-group name="patients" tag="ul">\
                         <li v-for="(item, index) in list" :key="\'patient-key\'+item.index">\
-                            <p>{{item.visitTime}} [{{item.dept}}]</p>\
-                            <p class="white"><span class="blue">{{item.patientName}} {{item.sex}}</span>  在 <span class="blue">{{item.hospitalName}}</span> 就诊</p>\
+                            <p class="white">{{item.visitTime}} [{{item.patientType}}]</p>\
+                            <p><span class="blue">{{item.patientName}} {{item.sex}}</span>  在 <span class="white">{{item.hospitalName}} {{item.dept}}</span>\
+                            <span v-if="item.type==1">就诊</span>\
+                            <span v-if="item.type==2">就诊</span>\
+                            <span v-if="item.type==3">住院</span>\
+                            <span v-if="item.type==4">挂号</span>\
+                            <span v-if="item.type==5">转诊</span>\
+                            </p>\
                         </li>\
                     </transition-group>\
                 </div>',
@@ -602,7 +606,7 @@
     };
     Platforms.prototype.setPays = function () {
         for (let key in this.pays) {
-            console.log(this.pays)
+           // console.log(this.pays)
             setTimeout(() => {
                 // 1-100
                 this.pays[key] += Math.floor(Math.random() * 10 + 1);
@@ -657,7 +661,7 @@
                         </div>`,
             data () {
                 return {
-                    list: {'csrs':'出生人数', 'crbk':'传染报卡','jjcccs':'急救车出车数','jjcdms':'急救车待命数'}
+                    list: {'rycs':'入院人次','csrs':'出生人数','crbk':'传染报卡','jjcccs':'急救车出车数','jjcdms':'急救车待命数'}
                 };
             },
             components: {
@@ -665,9 +669,103 @@
             },
             mounted: function () {
                 this.$nextTick(function () {
+
                 });
             }
         }
+    };
+    //排行饼图
+    Platforms.prototype.pieTemplate=function(){
+        let pf = this;
+        return {
+            template: `<div class="rank-pie" ref="pieChart"></div>`,
+            data () {
+                return {
+
+                }
+                },
+                mounted: function () {
+                    pf.initPie(this.$refs.pieChart,'排行')
+                }
+            }
+    };
+    Platforms.prototype.initPie = function (dom, name) {
+        let option =  {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            color: ['rgba(255,74,73,1)', 'rgba(255,251,160,1)', 'rgba(37,166,255,1)', 'rgba(123,218,254,1)', 'rgba(56,236,181,1)'],
+            legend: {
+                orient: 'vertical',
+                data:['急性上呼吸道感染','急性支气管炎','高血压','糖尿病','慢性胃炎'],
+                right: 10,
+                top: 20,
+                bottom: 20,
+                itemWidth:8,
+                itemHeight:8,
+                textStyle:{
+                    color:'#DCE2FE'
+                }
+            },
+            label: {
+                normal: {
+                    formatter: '{{c}  {per|{d}%}'
+                }
+            },
+            lineStyle: {
+                normal: {
+                    opacity: 0.4
+                }
+            },
+            series: [
+                {
+                    name:name,
+                    type:'pie',
+                    center: ['30%', '43%'],
+                    radius: ['26%', '52%'],
+                    avoidLabelOverlap: false,
+                    itemStyle:{
+                        opacity: 0.85
+                    },
+                    label: {
+                        color:'#DCE2FE',
+                        normal: {
+                            formatter: '{c}',
+                            textStyle: {
+                                color: '#DCE2FE'
+                            }
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '16px',
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            lineStyle: {
+                                color: '#DCE2FE'
+                            },
+                        }
+                    },
+
+                    data:[
+                        {value:1566, name:'急性上呼吸道感染'},
+                        {value:310, name:'急性支气管炎'},
+                        {value:234, name:'高血压'},
+                        {value:135, name:'糖尿病'},
+                        {value:1548, name:'慢性胃炎'}
+                    ]
+                }
+            ]
+        };
+
+        let pie = echarts.init(dom);
+        pie.setOption(option);
+
+        this.pieCharts.push(pie);
     };
 
     Platforms.prototype.setChartTab = function () {
@@ -737,10 +835,9 @@
         this.setPays();
 
         // this.setPatients(testdata, testdata1);
+        this.getPatients();
         this.setPatients();
 
-        // vis
-        // this.initVisit();
 
         // HOD
         // this.initHOD()
@@ -752,28 +849,105 @@
 
     // 获取实时就诊数据
     Platforms.prototype.getPatients = function (callback) {
-        setTimeout(() => {
-            callback([
-                { patientName: '张1三', sex: '0', dept: '急诊科', fromName: '青溪镇', coord: [104.845764, 32.465088], toName: '青川县人民医院', visitTime: '09:36:01' },
-                { patientName: '李1四', sex: '1', dept: '骨科', fromName: '竹园镇', coord: [105.339385, 32.224964], toName: '青川县人民医院', visitTime: '09:36:02' },
-                { patientName: '王1五', sex: '0', dept: '泌尿科', fromName: '鼓城乡', coord: [106.475493, 32.605448], toName: '旺苍县妇幼保健院', visitTime: '09:36:03' },
-                { patientName: '赵1六', sex: '1', dept: '妇科', fromName: '金溪镇', coord: [106.67255, 32.290656], toName: '旺苍县妇幼保健院', visitTime: '09:36:04' },
-                { patientName: '张2三', sex: '0', dept: '眼科', fromName: '木马镇', coord: [105.650802, 31.985039], toName: '剑阁县中医医院', visitTime: '09:36:05' },
-                { patientName: '李2四', sex: '1', dept: '中医科', fromName: '瑞福文化广场', coord: [105.441158, 31.592568], toName: '剑阁县中医医院', visitTime: '09:36:06' },
-                { patientName: '王2五', sex: '0', dept: '消化内科', fromName: '姚渡站', coord: [105.504476, 32.809173], toName: '青川县人民医院', visitTime: '09:36:07' },
-                { patientName: '赵2六', sex: '1', dept: '心内科', fromName: '东宝镇', coord: [105.230047, 31.948648], toName: '剑阁县中医医院', visitTime: '09:36:08' },
-                { patientName: '张3三', sex: '0', dept: '血液科', fromName: '军师庙火车站', coord: [105.888553, 32.709309], toName: '富阳朝天区人民医院', visitTime: '09:36:09' },
-                { patientName: '李3四', sex: '0', dept: '神经内科', fromName: '曾家镇', coord: [106.113761, 32.625418], toName: '富阳朝天区人民医院', visitTime: '09:36:10' },
-                { patientName: '王3五', sex: '1', dept: '小儿科', fromName: '白果乡', coord: [105.775517, 32.184534], toName: '昭化区妇幼保健院', visitTime: '09:36:11' },
-                { patientName: '赵3六', sex: '0', dept: '肝胆外科', fromName: '柏林沟镇', coord: [105.889092, 32.090701], toName: '昭化区妇幼保健院', visitTime: '09:36:12' },
-                { patientName: '张4三', sex: '1', dept: '烧伤科', fromName: '双石乡', coord: [106.341311, 32.046136], toName: '苍溪县第二人民医院', visitTime: '09:36:13' },
-                { patientName: '李4四', sex: '0', dept: '产科', fromName: '苍溪县云峰镇敬老院', coord: [105.990951, 31.695043], toName: '苍溪县第二人民医院', visitTime: '09:36:14' },
-                { patientName: '王4五', sex: '0', dept: '耳鼻喉科', fromName: '金洞乡', coord: [105.566818, 32.61007], toName: '利州区第二人民医院', visitTime: '09:36:15' },
-                { patientName: '赵4六', sex: '1', dept: '口腔科', fromName: '赤化镇', coord: [105.582863, 32.341286], toName: '利州区第二人民医院', visitTime: '09:36:16' },
-                { patientName: '张5三', sex: '0', dept: '皮肤科', fromName: '李家乡', coord: [106.215535, 32.564292], toName: '朝天区中医医院', visitTime: '09:36:17' },
-                { patientName: '李5四', sex: '0', dept: '妇产科', fromName: '羊木火车站', coord: [105.78513, 32.60054], toName: '朝天区中医医院', visitTime: '09:36:18' }
-            ])
-        }, 1000);
+        axios.get('/dataLists').then(function (response) {
+            var response = response.data.Data;
+            callback(response);
+        }).catch(function (error) {
+            let j = [{//response.Data
+                "VistiTime": "21:14:01",
+                "Type": "4",
+                "Name": "鲁果",
+                "Sex": null,
+                "DeptName": "眼科门诊",
+                "HospatileName": "富阳区第一人民医院"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院222"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院222"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院222"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院222"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院222"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院222"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院222"
+            }, {
+                "VistiTime": "21:13:21",
+                "Type": "4",
+                "Name": "许杰",
+                "Sex": null,
+                "DeptName": "皮肤科",
+                "HospatileName": "富阳区中医院222"
+            }];
+            callback(j);
+            console.log(error);
+        });
     };
     // 获取双向转诊数据
     Platforms.prototype.getReferrals = function (callback) {
@@ -817,7 +991,8 @@
             'pays': pf.paysTemplate(),
             'date': pf.dateTemplate(),
             'bar-tab': pf.barTabTemplate(),
-            'tabs': pf.tabsTemplate()
+            'tabs': pf.tabsTemplate(),
+            'pie':pf.pieTemplate()
         },
         mounted: function () {
             this.$nextTick(function () {

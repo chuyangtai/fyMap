@@ -8,17 +8,28 @@
 <body>
     <div class="page page-index" id="page-index">
         <div class="title-bg">
-            <div class="title"></div>
+            <div class="title">
+                <img src="./img/biaoti@2x.png" alt="">
+            </div>
             <date></date>
         </div>
-        <div class="content flex items-start mt20">
+        <div class="content flex items-start mt20 justify-between">
             <div>
                 <div class="module-case patients-case">
+                    <i class="border-tl"></i><i class="border-tr"></i><i class="border-bl"></i><i class="border-br"></i>
                     <p class="title-bar">实时就诊信息</p>
                     <patients></patients>
                 </div>
                 <div>
+                    <div class="module-case pie mt20">
+                        <i class="border-tl"></i><i class="border-tr"></i><i class="border-bl"></i><i class="border-br"></i>
+                        <div class="title-bar">疾病诊断分布</div>
+                        <pie></pie>
+                    </div>
+                </div>
+                <div>
                     <div class="module-case pay mt20">
+                        <i class="border-tl"></i><i class="border-tr"></i><i class="border-bl"></i><i class="border-br"></i>
                         <div class="title-bar">支付信息(笔数)</div>
                         <pays></pays>
                     </div>
@@ -27,12 +38,16 @@
 
             <div class="charts">
                 <tabs></tabs>
-                <canvas id="map" width="904" height="540">canvas</canvas>
+                <div class="map-div">
+                    <canvas id="map" width="904" height="540"></canvas>
+                    <!--<canvas id="map" width="904" height="540"></canvas>-->
+                </div>
                 <div class="legend">
                     <ul>
-                        <li class="flex items-center"> <div class="level-1"></div><span>1000以下</span></li>
-                        <li class="flex items-center"> <div class="level-2"></div><span>1000～5000</span></li>
-                        <li class="flex items-center"> <div class="level-3"></div><span>5000以上</span></li>
+                        <li class="flex items-center"> <div class="level-1"></div><span>500以下</span></li>
+                        <li class="flex items-center"> <div class="level-2"></div><span>500～1000</span></li>
+                        <li class="flex items-center"> <div class="level-3"></div><span>1000～3000</span></li>
+                        <li class="flex items-center"> <div class="level-4"></div><span>3000以上</span></li>
                     </ul>
                 </div>
                 <div>
@@ -40,67 +55,94 @@
                 </div>
             </div>
 
-			<!-- 折线图 -->
-	        <div class="line-content">
-	            <div class="line-case">
-	                <i class="border-tl"></i><i class="border-tr"></i><i class="border-bl"></i><i class="border-br"></i>
-	                <p class="line-title">当日就诊量</p>
-	                <p class="forecast-visit"><span></span></p>
-	                <div class="line-box" id="line-visit"></div>
-	            </div>
-	            <div class="line-case">
-	                <p class="line-title">智慧支付笔数</p>
-	                <p class="forecast-pay"><span></span></p>
-	                <div class="line-box" id="line-pay"></div>
-	            </div>
-	            <div class="line-case">
-	                <p class="line-title">预约挂号</p>
-	                <p class="forecast-regist"><span></span></p>
-	                <div class="line-box" id="line-regist"></div>
-	            </div>
-	        </div>
+            <!-- 折线图 -->
+            <div class="line-content">
+                <div class="line-case">
+                    <i class="border-tl"></i><i class="border-tr"></i><i class="border-bl"></i><i class="border-br"></i>
+                    <p class="line-title">当日就诊量</p>
+                    <p class="forecast-visit"><span></span></p>
+                    <div class="line-box" id="line-visit"></div>
+                </div>
+                <div class="line-case">
+                    <i class="border-tl"></i><i class="border-tr"></i><i class="border-bl"></i><i class="border-br"></i>
+                    <p class="line-title">智慧支付笔数</p>
+                    <p class="forecast-pay"><span></span></p>
+                    <div class="line-box" id="line-pay"></div>
+                </div>
+                <div class="line-case">
+                    <i class="border-tl"></i><i class="border-tr"></i><i class="border-bl"></i><i class="border-br"></i>
+                    <p class="line-title">预约挂号</p>
+                    <p class="forecast-regist"><span></span></p>
+                    <div class="line-box" id="line-regist"></div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="js/vue.min.js"></script>
+    <script src="js/axios.min.js"></script>
     <script src="js/echarts.min.js"></script>
     <script src="js/lodash.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/cMap.js"></script>
 
     <script type="text/javascript">
-        // 模拟数据
-        var visitActualData = [10, 7, 8, 6, 21, 9],
-            visitForecastData = [6, 4, 9, 7];
-            payActualData = [130, 57, 88, 16, 12, 99],
-            payForecastData = [61, 54, 9, 62],
-            registActualData = [10, 17, 65, 6, 12, 99],
-            registForecastData = [68, 4, 9, 57];
-        
+        var visitActualData, // 当日就诊量 实际情况
+            visitForecastData , // 当日就诊量 预测情况
+            payActualData, // 智慧支付笔数 实际情况
+            payForecastData, // 智慧支付笔数 预测情况
+            registActualData, // 预约挂号 实际情况
+            registForecastData; // 预约挂号 预测情况
         // 折线图的辅助线
         var visitMax,
             payMax,
             registMax;
-        visitMax = Math.max.apply(null, visitActualData.concat(visitForecastData))
-        payMax = Math.max.apply(null, payActualData.concat(payForecastData))
-        registMax = Math.max.apply(null, registActualData.concat(registForecastData))
 
+        var datalength;
         // 预测数据调整为折线图数据
-        var datalength = visitActualData.length-1;
         function fnData (actualData, forecastData){
             actualData.forEach(function(item,i){
                 i == datalength ? forecastData.splice(i, 0, item) : forecastData.splice(0, 0, '-');
             })
         }
-        fnData(visitActualData, visitForecastData);
-        fnData(payActualData, payForecastData);
-        fnData(registActualData, registForecastData);
 
+        // 折线图数值更新
+        function fnOption(option, max, actualData, length, forecastData){
+            option.yAxis[0].max = max;
+            option.series[0].data = actualData;
+            option.series[0].markLine.data[0][0].coord = [length, 0];
+            option.series[0].markLine.data[0][1].coord = [length, max];
+            option.series[1].data = forecastData;
+        }
+        // 初始化页面
+        function fnInit(){
+            // 折线图的辅助线
+            visitMax = Math.max.apply(null, visitActualData.concat(visitForecastData));
+            payMax = Math.max.apply(null, payActualData.concat(payForecastData));
+            registMax = Math.max.apply(null, registActualData.concat(registForecastData));
+
+            // 预测数据调整为折线图数据
+            datalength = visitActualData.length-1;
+            fnData(visitActualData, visitForecastData);
+            fnData(payActualData, payForecastData);
+            fnData(registActualData, registForecastData);
+
+            // 折线图数值更新
+            fnOption(visitOption, visitMax, visitActualData, datalength, visitForecastData)
+            fnOption(payOption, payMax, payActualData, datalength, payForecastData)
+            fnOption(registOption, registMax, registActualData, datalength, registForecastData)
+
+            // 使用刚指定的配置项和数据显示图表。
+            visitChart.setOption(visitOption);
+            payChart.setOption(payOption);
+            registChart.setOption(registOption);
+        }
+        setTimeout("visitActualData = [10, 7, 8, 6, 21, 9, 57], visitForecastData = [4, 9, 7], payActualData = [130, 57, 88, 16, 12, 99, 34], payForecastData = [54, 9, 62], registActualData = [10, 17, 65, 6, 12, 99, 23], registForecastData = [4, 9, 57], fnInit()", 3000);
 
         // 基于准备好的dom，初始化echarts实例
         var visitChart = echarts.init(document.getElementById('line-visit')),
             payChart = echarts.init(document.getElementById('line-pay')),
             registChart = echarts.init(document.getElementById('line-regist'));
-        
+
         var visitOption = {
             grid: {
                 left: '3%',
@@ -166,9 +208,11 @@
                             x2: 0,
                             y2: 1,
                             colorStops: [{
-                                offset: 0, color: '#51ECBC' // 0% 处的颜色
+                                offset: 0, color: 'rgba(81,236,188,1)' // 0% 处的颜色
                             }, {
-                                offset: 1, color: '#06254D' // 100% 处的颜色
+                                offset: 0.7, color: 'rgba(81,236,188,.7)' // 100% 处的颜色
+                            }, {
+                                offset: 1, color: 'rgba(81,236,188,0)' // 100% 处的颜色
                             }],
                             globalCoord: false // 缺省为 false
                         },
@@ -271,9 +315,11 @@
                             x2: 0,
                             y2: 1,
                             colorStops: [{
-                                offset: 0, color: '#FFF638' // 0% 处的颜色
+                                offset: 0, color: 'rgba(255,228,94,1)' // 0% 处的颜色
                             }, {
-                                offset: 1, color: '#06254D' // 100% 处的颜色
+                                offset: 0.7, color: 'rgba(255,228,94,.7)' // 100% 处的颜色
+                            }, {
+                                offset: 1, color: 'rgba(255,228,94,0)' // 100% 处的颜色
                             }],
                             globalCoord: false // 缺省为 false
                         },
@@ -375,9 +421,11 @@
                             x2: 0,
                             y2: 1,
                             colorStops: [{
-                                offset: 0, color: '#FC6769' // 0% 处的颜色
+                                offset: 0, color: 'rgba(252,55,58,1)' // 0% 处的颜色
                             }, {
-                                offset: 1, color: '#06254D' // 100% 处的颜色
+                                offset: 0.7, color: 'rgba(252,55,58,.7)' // 100% 处的颜色
+                            }, {
+                                offset: 1, color: 'rgba(252,55,58,0)' // 100% 处的颜色
                             }],
                             globalCoord: false // 缺省为 false
                         },
@@ -415,10 +463,14 @@
             ]
         };
 
-        // 使用刚指定的配置项和数据显示图表。
-        visitChart.setOption(visitOption);
-        payChart.setOption(payOption);
-        registChart.setOption(registOption);
+            // 模拟数据
+            visitActualData = [10, 7, 8, 6, 21, 9],
+            visitForecastData = [6, 4, 9, 7],
+            payActualData = [130, 57, 88, 16, 12, 99],
+            payForecastData = [61, 54, 9, 62],
+            registActualData = [10, 17, 65, 6, 12, 99],
+            registForecastData = [68, 4, 9, 57];
+        fnInit();
     </script>
 
 </body>
